@@ -9,9 +9,31 @@ export async function signOut() {
 }
 
 export async function getCurrentUser() {
-	const { data, error } = await supabase.auth.getUser()
+	const { data, error } = await supabase.auth.getSession()
+
 	if (error) {
-        throw error
-    }
+		throw error
+	}
+
+	return data.session?.user ?? null
+}
+
+export async function getOrCreateCurrentUser() {
+	const existingUser = await getCurrentUser()
+
+	if (existingUser) {
+		return existingUser
+	}
+
+	const { data, error } = await signInAnonymously()
+
+	if (error) {
+		throw error
+	}
+
+	if (!data.user) {
+		throw new Error('Unable to establish an authenticated user session.')
+	}
+
 	return data.user
 }
