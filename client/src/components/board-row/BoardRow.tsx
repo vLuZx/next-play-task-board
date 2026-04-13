@@ -12,6 +12,11 @@ type ActiveDragState = {
 	fromStatus: TaskStatus
 }
 
+type TouchPoint = {
+	clientX: number
+	clientY: number
+}
+
 const defaultCollapsed: Record<TaskStatus, boolean> = {
 	todo: false,
 	in_progress: false,
@@ -30,6 +35,10 @@ type BoardRowProps = {
 	onDrop: (status: TaskStatus) => void
 	onDragStart: (taskId: string, fromStatus: TaskStatus) => void
 	onDragEnd: () => void
+	onTouchDragStart: (taskId: string, fromStatus: TaskStatus, point: TouchPoint) => void
+	onTouchDragMove: (point: TouchPoint) => boolean
+	onTouchDragEnd: (point: TouchPoint) => boolean
+	onTouchDragCancel: () => void
 	onOpenTaskDetail: (taskId: string) => void
 	onEditTask: (task: BoardTask) => void
 	onDeleteTask: (taskId: string) => void
@@ -76,6 +85,10 @@ export function BoardRow({
 	onDrop,
 	onDragStart,
 	onDragEnd,
+	onTouchDragStart,
+	onTouchDragMove,
+	onTouchDragEnd,
+	onTouchDragCancel,
 	onOpenTaskDetail,
 	onEditTask,
 	onDeleteTask,
@@ -185,6 +198,7 @@ export function BoardRow({
 							<div
 								id={`board-row-${column.status}`}
 								className="board-row__body"
+								data-drop-status={column.status}
 								onDragOver={(event) => {
 									event.preventDefault()
 									if (activeDrag?.fromStatus === column.status) {
@@ -233,6 +247,37 @@ export function BoardRow({
 												draggable
 												onDragStart={() => onDragStart(task.id, column.status)}
 												onDragEnd={onDragEnd}
+												onTouchStart={(event) => {
+													const touch = event.touches[0]
+													if (!touch) {
+														return
+													}
+
+													onTouchDragStart(task.id, column.status, { clientX: touch.clientX, clientY: touch.clientY })
+												}}
+												onTouchMove={(event) => {
+													const touch = event.touches[0]
+													if (!touch) {
+														return
+													}
+
+													const isDraggingByTouch = onTouchDragMove({ clientX: touch.clientX, clientY: touch.clientY })
+													if (isDraggingByTouch) {
+														event.preventDefault()
+													}
+												}}
+												onTouchEnd={(event) => {
+													const touch = event.changedTouches[0]
+													if (!touch) {
+														return
+													}
+
+													const isDraggingByTouch = onTouchDragEnd({ clientX: touch.clientX, clientY: touch.clientY })
+													if (isDraggingByTouch) {
+														event.preventDefault()
+													}
+												}}
+												onTouchCancel={onTouchDragCancel}
 												onClick={() => onOpenTaskDetail(task.id)}
 												onKeyDown={(event) => {
 													if (event.key === 'Enter' || event.key === ' ') {

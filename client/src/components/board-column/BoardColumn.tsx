@@ -12,6 +12,11 @@ type ActiveDragState = {
 	fromStatus: TaskStatus
 }
 
+type TouchPoint = {
+	clientX: number
+	clientY: number
+}
+
 type BoardColumnProps = {
 	columns: BoardColumnDefinition[]
 	members: TeamMember[]
@@ -23,6 +28,10 @@ type BoardColumnProps = {
 	onDrop: (status: TaskStatus) => void
 	onDragStart: (taskId: string, fromStatus: TaskStatus) => void
 	onDragEnd: () => void
+	onTouchDragStart: (taskId: string, fromStatus: TaskStatus, point: TouchPoint) => void
+	onTouchDragMove: (point: TouchPoint) => boolean
+	onTouchDragEnd: (point: TouchPoint) => boolean
+	onTouchDragCancel: () => void
 	onOpenTaskDetail: (taskId: string) => void
 	onEditTask: (task: BoardTask) => void
 	onDeleteTask: (taskId: string) => void
@@ -69,6 +78,10 @@ export function BoardColumn({
 	onDrop,
 	onDragStart,
 	onDragEnd,
+	onTouchDragStart,
+	onTouchDragMove,
+	onTouchDragEnd,
+	onTouchDragCancel,
 	onOpenTaskDetail,
 	onEditTask,
 	onDeleteTask,
@@ -120,6 +133,37 @@ export function BoardColumn({
 				draggable
 				onDragStart={() => onDragStart(task.id, status)}
 				onDragEnd={onDragEnd}
+				onTouchStart={(event) => {
+					const touch = event.touches[0]
+					if (!touch) {
+						return
+					}
+
+					onTouchDragStart(task.id, status, { clientX: touch.clientX, clientY: touch.clientY })
+				}}
+				onTouchMove={(event) => {
+					const touch = event.touches[0]
+					if (!touch) {
+						return
+					}
+
+					const isDraggingByTouch = onTouchDragMove({ clientX: touch.clientX, clientY: touch.clientY })
+					if (isDraggingByTouch) {
+						event.preventDefault()
+					}
+				}}
+				onTouchEnd={(event) => {
+					const touch = event.changedTouches[0]
+					if (!touch) {
+						return
+					}
+
+					const isDraggingByTouch = onTouchDragEnd({ clientX: touch.clientX, clientY: touch.clientY })
+					if (isDraggingByTouch) {
+						event.preventDefault()
+					}
+				}}
+				onTouchCancel={onTouchDragCancel}
 				onClick={() => onOpenTaskDetail(task.id)}
 				onKeyDown={(event) => {
 					if (event.key === 'Enter' || event.key === ' ') {
@@ -255,6 +299,7 @@ export function BoardColumn({
 
 						<div
 							className="board-column__body"
+							data-drop-status={column.status}
 							onDragOver={(event) => {
 								event.preventDefault()
 								if (activeDrag?.fromStatus === column.status) {

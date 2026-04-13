@@ -94,6 +94,8 @@
 	padding: 0.36rem 0.55rem;
 	border-bottom: 1px solid var(--border);
 	cursor: pointer;
+	-webkit-user-select: none;
+	user-select: none;
 	transition: background-color 0.12s ease, opacity 0.16s ease;
 }
 
