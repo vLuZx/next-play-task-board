@@ -11,9 +11,7 @@ export async function signOut() {
 export async function getCurrentUser() {
 	const { data, error } = await supabase.auth.getSession()
 
-	if (error) {
-		throw error
-	}
+	if (error) throw error
 
 	return data.session?.user ?? null
 }

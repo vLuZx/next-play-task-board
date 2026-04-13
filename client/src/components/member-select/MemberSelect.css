@@ -1,0 +1,137 @@
+.member-select {
+	position: relative;
+	width: 100%;
+}
+
+/* ── Trigger button ──────────────────── */
+
+.member-select__trigger {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	width: 100%;
+	padding: 0.65rem 0.875rem;
+	border: 1px solid var(--border);
+	border-radius: 0.75rem;
+	background: var(--input-background);
+	color: var(--text-primary);
+	font-size: 0.9rem;
+	cursor: pointer;
+	text-align: left;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.member-select__trigger:focus-visible {
+	outline: none;
+	border-color: var(--accent);
+	box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.member-select__trigger--open {
+	border-color: var(--accent);
+	box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.member-select__name {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.member-select__avatars {
+	display: inline-flex;
+	align-items: center;
+}
+
+.member-select__avatars > * + * {
+	margin-left: -0.4rem;
+}
+
+.member-select__name--placeholder {
+	color: var(--text-secondary);
+}
+
+.member-select__chevron {
+	flex-shrink: 0;
+	font-size: 1rem;
+	color: var(--text-secondary);
+	transition: transform 0.18s ease;
+}
+
+.member-select__chevron--open {
+	transform: rotate(180deg);
+}
+
+.member-select__unassigned-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: var(--surface-alt);
+	border: 1px solid var(--border);
+	color: var(--text-secondary);
+	font-size: 0.8rem;
+	flex-shrink: 0;
+}
+
+/* ── Dropdown list ───────────────────── */
+
+.member-select__list {
+	position: absolute;
+	top: calc(100% + 0.35rem);
+	left: 0;
+	right: 0;
+	z-index: 50;
+	list-style: none;
+	margin: 0;
+	padding: 0.3rem;
+	border: 1px solid var(--border);
+	border-radius: 0.75rem;
+	background: var(--surface);
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+	max-height: 14rem;
+	overflow-y: auto;
+}
+
+/* ── Options ─────────────────────────── */
+
+.member-select__option {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	padding: 0.5rem 0.65rem;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	transition: background-color 0.13s ease;
+}
+
+.member-select__option:hover {
+	background: var(--surface-alt);
+}
+
+.member-select__option--selected {
+	background: var(--accent-soft);
+}
+
+.member-select__option--selected .member-select__option-name {
+	color: var(--accent);
+	font-weight: 600;
+}
+
+.member-select__option-name {
+	flex: 1;
+	font-size: 0.875rem;
+	color: var(--text-primary);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.member-select__check {
+	flex-shrink: 0;
+	color: var(--accent);
+	font-size: 0.95rem;
+}
