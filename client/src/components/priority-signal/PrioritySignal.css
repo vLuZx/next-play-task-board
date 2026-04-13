@@ -1,0 +1,36 @@
+.priority-signal {
+	display: inline-flex;
+	align-items: flex-end;
+	gap: 0.14rem;
+	height: 0.95rem;
+}
+
+.priority-signal__bar {
+	width: 0.22rem;
+	border-radius: 0.2rem;
+	background: color-mix(in srgb, var(--border) 80%, transparent);
+}
+
+.priority-signal__bar--1 {
+	height: 0.4rem;
+}
+
+.priority-signal__bar--2 {
+	height: 0.65rem;
+}
+
+.priority-signal__bar--3 {
+	height: 0.9rem;
+}
+
+.priority-signal--low .priority-signal__bar.is-active {
+	background: #16a34a;
+}
+
+.priority-signal--normal .priority-signal__bar.is-active {
+	background: #ca8a04;
+}
+
+.priority-signal--high .priority-signal__bar.is-active {
+	background: #dc2626;
+}

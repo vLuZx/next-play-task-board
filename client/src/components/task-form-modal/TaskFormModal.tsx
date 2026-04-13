@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from 'react'
 import { FiPlus, FiX } from 'react-icons/fi'
+import './TaskFormModal.css'
 import { TextField } from '@/components/text-field/TextField'
 import { DatePickerField } from '@/components/date-picker/DatePickerField'
 import { MemberSelect } from '@/components/member-select/MemberSelect'

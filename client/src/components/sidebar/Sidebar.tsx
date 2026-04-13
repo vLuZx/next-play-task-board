@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { FiLayout, FiUsers, FiChevronLeft, FiChevronRight, FiSun, FiMoon, FiMonitor, FiList, FiColumns } from 'react-icons/fi'
+import { FiLayout, FiUsers, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
+import { ThemeSwitch } from './theme-switch/ThemeSwitch'
+import { ViewModeSwitch } from './view-mode-switch/ViewModeSwitch'
 import './Sidebar.css'
 
 type SidebarProps = {
@@ -16,19 +18,19 @@ const navItems = [
 	{ to: '/team', icon: <FiUsers aria-hidden="true" />, label: 'Team Members' },
 ]
 
-export function Sidebar({ themeMode, boardViewMode, allowRowView, onChangeThemeMode, onChangeBoardViewMode }: SidebarProps) {
+export function Sidebar({ themeMode, boardViewMode, allowRowView, onChangeThemeMode, onChangeBoardViewMode }: Readonly<SidebarProps>) {
 	const [isCollapsed, setIsCollapsed] = useState(false)
 
 	return (
 		<>
-			{!isCollapsed ? (
+			{isCollapsed ? null : (
 				<button
 					type="button"
 					className="sidebar__mobile-backdrop"
 					onClick={() => setIsCollapsed(true)}
 					aria-label="Collapse sidebar"
 				/>
-			) : null}
+			)}
 			<aside className={`sidebar${isCollapsed ? ' sidebar--collapsed' : ''}`}>
 				<div className="sidebar__header">
 				{!isCollapsed && (
@@ -63,66 +65,12 @@ export function Sidebar({ themeMode, boardViewMode, allowRowView, onChangeThemeM
 			</nav>
 
 			<div className="sidebar__footer">
-				<div
-					className={`sidebar__view-group${allowRowView ? '' : ' sidebar__view-group--single'}`}
-					role="group"
-					aria-label="Board view mode"
-				>
-					{allowRowView ? (
-						<button
-							type="button"
-							className={`sidebar__view-btn${boardViewMode === 'row' ? ' sidebar__view-btn--active' : ''}`}
-							onClick={() => onChangeBoardViewMode('row')}
-							aria-pressed={boardViewMode === 'row'}
-							aria-label="Row view"
-							title="Switch to Change View"
-						>
-							<FiList aria-hidden="true" />
-						</button>
-					) : null}
-					<button
-						type="button"
-						className={`sidebar__view-btn${boardViewMode === 'column' ? ' sidebar__view-btn--active' : ''}`}
-						onClick={() => onChangeBoardViewMode('column')}
-						aria-pressed={boardViewMode === 'column'}
-						aria-label="Column view"
-						title="Switch to Change View"
-					>
-						<FiColumns aria-hidden="true" />
-					</button>
-				</div>
-				<div className="sidebar__theme-group" role="group" aria-label="Theme mode">
-					<button
-						type="button"
-						className={`sidebar__theme-btn${themeMode === 'light' ? ' sidebar__theme-btn--active' : ''}`}
-						onClick={() => onChangeThemeMode('light')}
-						aria-pressed={themeMode === 'light'}
-						aria-label="Light theme"
-						title="Light"
-					>
-						<FiSun aria-hidden="true" />
-					</button>
-					<button
-						type="button"
-						className={`sidebar__theme-btn${themeMode === 'system' ? ' sidebar__theme-btn--active' : ''}`}
-						onClick={() => onChangeThemeMode('system')}
-						aria-pressed={themeMode === 'system'}
-						aria-label="System theme"
-						title="System"
-					>
-						<FiMonitor aria-hidden="true" />
-					</button>
-					<button
-						type="button"
-						className={`sidebar__theme-btn${themeMode === 'dark' ? ' sidebar__theme-btn--active' : ''}`}
-						onClick={() => onChangeThemeMode('dark')}
-						aria-pressed={themeMode === 'dark'}
-						aria-label="Dark theme"
-						title="Dark"
-					>
-						<FiMoon aria-hidden="true" />
-					</button>
-				</div>
+				<ViewModeSwitch
+					boardViewMode={boardViewMode}
+					allowRowView={allowRowView}
+					onChangeBoardViewMode={onChangeBoardViewMode}
+				/>
+				<ThemeSwitch themeMode={themeMode} onChangeThemeMode={onChangeThemeMode} />
 			</div>
 			</aside>
 		</>

@@ -1,4 +1,4 @@
-import { Board } from '@/components/board/Board'
+import { Board } from '../components/board/Board'
 import { TaskDetailPanel } from '@/components/task-detail-panel/TaskDetailPanel'
 import { TaskFormModal } from '@/components/task-form-modal/TaskFormModal'
 import { useEffect, useRef, useState } from 'react'
