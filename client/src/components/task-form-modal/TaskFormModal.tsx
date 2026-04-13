@@ -96,7 +96,7 @@ export function TaskFormModal({
 						onClick={onClose}
 						aria-label="Close task dialog"
 					>
-						×
+						<FiX aria-hidden="true" />
 					</button>
 				</div>
 

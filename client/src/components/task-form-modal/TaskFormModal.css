@@ -349,7 +349,7 @@
 	padding: 1rem;
 	background: rgba(15, 23, 36, 0.48);
 	backdrop-filter: blur(4px);
-	z-index: 20;
+	z-index: 60;
 }
 
 .modal {
@@ -420,7 +420,7 @@
 	width: 2.25rem;
 	height: 2.25rem;
 	border: 1px solid var(--border);
-	border-radius: 999px;
+	border-radius: 0.45rem;
 	background: var(--surface-alt);
 	color: var(--text-primary);
 	font-size: 1.25rem;
@@ -456,6 +456,22 @@
 	}
 }
 
+@media (max-width: 900px) {
+	.modal-backdrop {
+		padding: 0;
+	}
+
+	.modal:not(.modal--confirm) {
+		width: 100%;
+		height: 100svh;
+		max-height: 100svh;
+		padding: 1rem;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+}
+
 @media (max-width: 640px) {
 	.task-form__meta-fields,
 	.task-form__actions {
@@ -465,6 +481,6 @@
 
 	.task-form__secondary,
 	.task-form__submit {
-		width: auto;
+		width: 100%;
 	}
 }

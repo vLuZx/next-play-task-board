@@ -11,8 +11,11 @@ type ViewModeSwitchProps = Readonly<{
 
 export function ViewModeSwitch({ boardViewMode, allowRowView, onChangeBoardViewMode }: ViewModeSwitchProps) {
 	return (
-		<fieldset className={`view-mode-switch${allowRowView ? '' : ' view-mode-switch--single'}`}>
-			<legend className="view-mode-switch__legend">Board view mode</legend>
+		<div
+			role="group"
+			aria-label="Board view mode"
+			className={`view-mode-switch${allowRowView ? '' : ' view-mode-switch--single'}`}
+		>
 			{allowRowView ? (
 				<button
 					type="button"
@@ -35,6 +38,6 @@ export function ViewModeSwitch({ boardViewMode, allowRowView, onChangeBoardViewM
 			>
 				<FiColumns aria-hidden="true" />
 			</button>
-		</fieldset>
+		</div>
 	)
 }

@@ -131,6 +131,17 @@
 	padding-left: 2rem;
 }
 
+.board-page__search:hover {
+	border-color: var(--accent);
+}
+
+.board-page__search:focus,
+.board-page__search:focus-visible {
+	outline: none;
+	border-color: var(--accent);
+	box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
 .board-page__filter-menu {
 	position: relative;
 	display: inline-flex;
@@ -166,6 +177,8 @@
 	font-size: 0.88rem;
 	font-weight: 600;
 	cursor: pointer;
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 .board-page__filter-trigger:hover {
@@ -192,7 +205,8 @@
 	right: 0;
 	display: grid;
 	gap: 0.52rem;
-	width: min(20rem, 90vw);
+	width: min(20rem, calc(100vw - 2rem));
+	max-width: calc(100vw - 2rem);
 	padding: 0.65rem;
 	border: 1px solid var(--border);
 	border-radius: 0.7rem;
@@ -665,12 +679,14 @@
 		display: inline-flex;
 		gap: 0.55rem;
 		width: auto;
+		max-width: 100%;
 		margin-left: auto;
 	}
 
 	.board-page__filter-menu,
 	.board-page__sort-menu {
 		width: auto;
+		max-width: 100%;
 	}
 
 	.board-page__filter-trigger {
@@ -678,9 +694,10 @@
 	}
 
 	.board-page__filter-popover {
-		left: 0;
-		right: auto;
-		width: 100%;
+		left: auto;
+		right: 0;
+		width: min(20rem, calc(100vw - 2.5rem));
+		max-width: calc(100vw - 2.5rem);
 	}
 
 }
@@ -714,6 +731,24 @@
 
 	.board-page__toolbar-controls {
 		justify-content: flex-start;
+		flex-wrap: wrap;
+	}
+
+	.board-page__filter-menu,
+	.board-page__sort-menu {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	.board-page__filter-trigger {
+		width: 100%;
+	}
+
+	.board-page__filter-popover {
+		left: 0;
+		right: 0;
+		width: auto;
+		max-width: none;
 	}
 
 	.board-page__stats {

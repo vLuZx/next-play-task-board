@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { FiArrowUp, FiChevronDown } from 'react-icons/fi'
+import { FiArrowUp, FiChevronDown, FiX } from 'react-icons/fi'
 import { Avatar } from '@/components/avatar/Avatar'
 import type { BoardTask, TaskActivity, TaskComment, TaskTag } from '@/types/task'
 import type { TeamMember } from '@/types/team'
@@ -122,7 +122,9 @@ export function TaskDetailPanel({
 		>
 			<header className="task-detail__header">
 				<h2 id={`task-detail-title-${task.id}`} className="task-detail__title">{task.title}</h2>
-				<button type="button" className="task-detail__close" onClick={onClose} aria-label="Close task details">×</button>
+				<button type="button" className="task-detail__close" onClick={onClose} aria-label="Close task details">
+					<FiX aria-hidden="true" />
+				</button>
 			</header>
 
 			<div className="task-detail__description-block">
