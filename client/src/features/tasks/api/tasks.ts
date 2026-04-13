@@ -368,3 +368,11 @@ export async function createTag(input: { userId: string; name: string }) {
 	if (error) throw error
 	return mapTaskTag(data as TagRow)
 }
+
+export async function deleteTag(tagId: string) {
+	const { error: unlinkError } = await supabase.from('task_tags').delete().eq('tag_id', tagId)
+	if (unlinkError) throw unlinkError
+
+	const { error } = await supabase.from('tags').delete().eq('id', tagId)
+	if (error) throw error
+}

@@ -3,6 +3,7 @@ import {
 	createTag,
 	createTask,
 	createTaskComment,
+	deleteTag,
 	deleteTask,
 	getTags,
 	getTaskActivity,
@@ -57,8 +58,6 @@ export type TaskFormState = {
 	assigneeIds: string[]
 	tagIds: string[]
 }
-
-type PriorityFilterValue = 'all' | PriorityFlow
 
 type TaskBoardSummary = {
 	total: number
@@ -150,12 +149,13 @@ export function useTaskBoard() {
 	const [isTaskModalOpen, setIsTaskModalOpen] = useState(false)
 	const [taskModalMode, setTaskModalMode] = useState<TaskModalMode>('create')
 	const [editingTaskId, setEditingTaskId] = useState<string | null>(null)
+	const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null)
 	const [formState, setFormState] = useState<TaskFormState>(initialFormState)
 	const [searchQuery, setSearchQuery] = useState('')
-	const [priorityFilter, setPriorityFilter] = useState<PriorityFilterValue>('all')
-	const [assigneeFilter, setAssigneeFilter] = useState('all')
-	const [labelFilter, setLabelFilter] = useState('all')
+	const [priorityFilter, setPriorityFilter] = useState<PriorityFlow[]>([])
+	const [assigneeFilter, setAssigneeFilter] = useState<string[]>([])
+	const [labelFilter, setLabelFilter] = useState<string[]>([])
 	const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
 	const [commentsByTask, setCommentsByTask] = useState<Record<string, Awaited<ReturnType<typeof getTaskComments>>>>({})
 	const [activityByTask, setActivityByTask] = useState<Record<string, TaskActivity[]>>({})
@@ -228,15 +228,15 @@ export function useTaskBoard() {
 				return false
 			}
 
-			if (priorityFilter !== 'all' && task.priorityFlow !== priorityFilter) {
+			if (priorityFilter.length > 0 && !priorityFilter.includes(task.priorityFlow)) {
 				return false
 			}
 
-			if (assigneeFilter !== 'all' && !task.assigneeIds.includes(assigneeFilter)) {
+			if (assigneeFilter.length > 0 && !assigneeFilter.some((id) => task.assigneeIds.includes(id))) {
 				return false
 			}
 
-			if (labelFilter !== 'all' && !task.tagIds.includes(labelFilter)) {
+			if (labelFilter.length > 0 && !labelFilter.some((id) => task.tagIds.includes(id))) {
 				return false
 			}
 
@@ -256,6 +256,7 @@ export function useTaskBoard() {
 	}, [tasks])
 
 	const selectedTask = selectedTaskId ? tasks.find((task) => task.id === selectedTaskId) ?? null : null
+	const deletingTask = deletingTaskId ? tasks.find((task) => task.id === deletingTaskId) ?? null : null
 	const taskComments = selectedTaskId ? commentsByTask[selectedTaskId] ?? [] : []
 	const taskActivity = selectedTaskId ? activityByTask[selectedTaskId] ?? [] : []
 
@@ -433,13 +434,25 @@ export function useTaskBoard() {
 		}
 	}
 
-	async function handleDeleteTask(taskId: string) {
-		if (!window.confirm('Delete this task?')) {
+	function requestDeleteTask(taskId: string) {
+		setDeletingTaskId(taskId)
+	}
+
+	function cancelDeleteTask() {
+		if (!isSubmitting) {
+			setDeletingTaskId(null)
+		}
+	}
+
+	async function confirmDeleteTask() {
+		if (!deletingTaskId) {
 			return
 		}
 
+		const taskId = deletingTaskId
 		const previousTasks = tasks
 		setErrorMessage(null)
+		setDeletingTaskId(null)
 		setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId))
 
 		try {
@@ -494,8 +507,29 @@ export function useTaskBoard() {
 			setTags((currentTags) => [...currentTags, createdTag].sort((a, b) => a.name.localeCompare(b.name)))
 			return createdTag
 		} catch (error) {
-			setErrorMessage(toErrorMessage(error, 'Unable to create label.'))
+			setErrorMessage(toErrorMessage(error, 'Unable to create tag.'))
 			return null
+		}
+	}
+
+	async function deleteExistingTag(tagId: string) {
+		setErrorMessage(null)
+
+		try {
+			await deleteTag(tagId)
+			setTags((currentTags) => currentTags.filter((tag) => tag.id !== tagId))
+			setTasks((currentTasks) =>
+				currentTasks.map((task) => ({
+					...task,
+					tagIds: task.tagIds.filter((id) => id !== tagId),
+				})),
+			)
+			setFormState((currentState) => ({
+				...currentState,
+				tagIds: currentState.tagIds.filter((id) => id !== tagId),
+			}))
+		} catch (error) {
+			setErrorMessage(toErrorMessage(error, 'Unable to delete tag.'))
 		}
 	}
 
@@ -561,6 +595,7 @@ export function useTaskBoard() {
 		taskModalMode,
 		formState,
 		selectedTask,
+		deletingTask,
 		taskComments,
 		taskActivity,
 		handleFieldChange,
@@ -576,9 +611,12 @@ export function useTaskBoard() {
 		openEditModal,
 		closeTaskModal,
 		submitTask,
-		handleDeleteTask,
+		requestDeleteTask,
+		cancelDeleteTask,
+		confirmDeleteTask,
 		handleMoveTask,
 		createNewTag,
+		deleteExistingTag,
 		openTaskDetail,
 		closeTaskDetail,
 		addComment,

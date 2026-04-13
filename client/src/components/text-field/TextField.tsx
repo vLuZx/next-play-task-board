@@ -37,7 +37,7 @@ export function TextField({
 			) : (
 				<input
 					type={type}
-					className="task-form__input"
+					className={`task-form__input${type === 'date' ? ' task-form__input--date' : ''}`}
 					value={value}
 					onChange={(event) => onChange(event.target.value)}
 					placeholder={placeholder}

@@ -111,7 +111,7 @@ export async function createTeamMember(input: CreateTeamMemberInput): Promise<Te
 	return mapMember(data as TeamMemberRow)
 }
 
-export async function updateTeamMember(id: string, updates: { name: string; avatarUrl?: string }): Promise<void> {
+export async function updateTeamMember(id: string, updates: { name: string; avatarUrl?: string | null }): Promise<void> {
 	const patch: Record<string, string | null> = { name: updates.name }
 	if (updates.avatarUrl !== undefined) {
 		patch.avatar_url = updates.avatarUrl

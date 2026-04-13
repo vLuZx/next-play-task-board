@@ -47,13 +47,15 @@ export function useTeamMembers() {
 		}
 	}
 
-	async function editMember(id: string, name: string, avatarFile: File | null): Promise<boolean> {
+	async function editMember(id: string, name: string, avatarFile: File | null, removeAvatar = false): Promise<boolean> {
 		setIsSubmitting(true)
 		setError(null)
 		try {
-			const updates: { name: string; avatarUrl?: string } = { name }
+			const updates: { name: string; avatarUrl?: string | null } = { name }
 			if (avatarFile) {
 				updates.avatarUrl = await uploadMemberAvatar(avatarFile)
+			} else if (removeAvatar) {
+				updates.avatarUrl = null
 			}
 			await updateTeamMember(id, updates)
 			await loadMembers(true)

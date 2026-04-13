@@ -10,6 +10,10 @@ type ModalMode = 'create' | 'edit'
 export function TeamMembersPage() {
 	const { members, isLoading, error, isSubmitting, isDeleting, addMember, editMember, deleteMember } = useTeamMembers()
 
+	useEffect(() => {
+		document.title = 'NextPlay - Team Members'
+	}, [])
+
 	// Modal
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [modalMode, setModalMode] = useState<ModalMode>('create')
@@ -17,6 +21,7 @@ export function TeamMembersPage() {
 	const [name, setName] = useState('')
 	const [avatarFile, setAvatarFile] = useState<File | null>(null)
 	const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+	const [isAvatarRemoved, setIsAvatarRemoved] = useState(false)
 	const [formError, setFormError] = useState<string | null>(null)
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -36,6 +41,7 @@ export function TeamMembersPage() {
 		setName('')
 		setAvatarFile(null)
 		setAvatarPreview(null)
+		setIsAvatarRemoved(false)
 		setFormError(null)
 		setIsModalOpen(true)
 	}
@@ -46,6 +52,7 @@ export function TeamMembersPage() {
 		setName(member.name)
 		setAvatarFile(null)
 		setAvatarPreview(member.avatarUrl ?? null)
+		setIsAvatarRemoved(false)
 		setFormError(null)
 		setOpenMenuId(null)
 		setIsModalOpen(true)
@@ -58,12 +65,22 @@ export function TeamMembersPage() {
 	function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0] ?? null
 		setAvatarFile(file)
+		setIsAvatarRemoved(false)
 		if (file) {
 			const reader = new FileReader()
 			reader.onload = (ev) => setAvatarPreview(ev.target?.result as string)
 			reader.readAsDataURL(file)
 		} else {
 			setAvatarPreview(null)
+		}
+	}
+
+	function handleRemoveAvatar() {
+		setAvatarFile(null)
+		setAvatarPreview(null)
+		setIsAvatarRemoved(true)
+		if (fileInputRef.current) {
+			fileInputRef.current.value = ''
 		}
 	}
 
@@ -74,7 +91,7 @@ export function TeamMembersPage() {
 			return
 		}
 		const ok = modalMode === 'edit' && editingMember
-			? await editMember(editingMember.id, name.trim(), avatarFile)
+			? await editMember(editingMember.id, name.trim(), avatarFile, isAvatarRemoved)
 			: await addMember(name.trim(), avatarFile)
 		if (ok) closeModal()
 	}
@@ -90,7 +107,7 @@ export function TeamMembersPage() {
 				<h1 className="team-page__title">Team Members</h1>
 				<button type="button" className="team-page__add-btn" onClick={openCreateModal}>
 					<FiPlus aria-hidden="true" />
-					Add New Member
+					<span className="team-page__add-btn-text">Add New Member</span>
 				</button>
 			</header>
 
@@ -200,6 +217,15 @@ export function TeamMembersPage() {
 									>
 										{avatarFile ? avatarFile.name : 'Choose image…'}
 									</button>
+									{modalMode === 'edit' && (avatarPreview || editingMember?.avatarUrl) ? (
+										<button
+											type="button"
+											className="team-modal__avatar-remove"
+											onClick={handleRemoveAvatar}
+										>
+											Remove avatar
+										</button>
+									) : null}
 									<input
 										ref={fileInputRef}
 										type="file"

@@ -1,24 +1,36 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { FiLayout, FiUsers, FiChevronLeft, FiChevronRight, FiSun, FiMoon, FiMonitor } from 'react-icons/fi'
+import { FiLayout, FiUsers, FiChevronLeft, FiChevronRight, FiSun, FiMoon, FiMonitor, FiList, FiColumns } from 'react-icons/fi'
 import './Sidebar.css'
 
 type SidebarProps = {
 	themeMode: 'light' | 'dark' | 'system'
+	boardViewMode: 'row' | 'column'
+	allowRowView: boolean
 	onChangeThemeMode: (mode: 'light' | 'dark' | 'system') => void
+	onChangeBoardViewMode: (mode: 'row' | 'column') => void
 }
 
 const navItems = [
-	{ to: '/', icon: <FiLayout aria-hidden="true" />, label: 'Board' },
+	{ to: '/', icon: <FiLayout aria-hidden="true" />, label: 'Task Board' },
 	{ to: '/team', icon: <FiUsers aria-hidden="true" />, label: 'Team Members' },
 ]
 
-export function Sidebar({ themeMode, onChangeThemeMode }: SidebarProps) {
+export function Sidebar({ themeMode, boardViewMode, allowRowView, onChangeThemeMode, onChangeBoardViewMode }: SidebarProps) {
 	const [isCollapsed, setIsCollapsed] = useState(false)
 
 	return (
-		<aside className={`sidebar${isCollapsed ? ' sidebar--collapsed' : ''}`}>
-			<div className="sidebar__header">
+		<>
+			{!isCollapsed ? (
+				<button
+					type="button"
+					className="sidebar__mobile-backdrop"
+					onClick={() => setIsCollapsed(true)}
+					aria-label="Collapse sidebar"
+				/>
+			) : null}
+			<aside className={`sidebar${isCollapsed ? ' sidebar--collapsed' : ''}`}>
+				<div className="sidebar__header">
 				{!isCollapsed && (
 					<span className="sidebar__logo">NextPlay</span>
 				)}
@@ -51,6 +63,34 @@ export function Sidebar({ themeMode, onChangeThemeMode }: SidebarProps) {
 			</nav>
 
 			<div className="sidebar__footer">
+				<div
+					className={`sidebar__view-group${allowRowView ? '' : ' sidebar__view-group--single'}`}
+					role="group"
+					aria-label="Board view mode"
+				>
+					{allowRowView ? (
+						<button
+							type="button"
+							className={`sidebar__view-btn${boardViewMode === 'row' ? ' sidebar__view-btn--active' : ''}`}
+							onClick={() => onChangeBoardViewMode('row')}
+							aria-pressed={boardViewMode === 'row'}
+							aria-label="Row view"
+							title="Switch to Change View"
+						>
+							<FiList aria-hidden="true" />
+						</button>
+					) : null}
+					<button
+						type="button"
+						className={`sidebar__view-btn${boardViewMode === 'column' ? ' sidebar__view-btn--active' : ''}`}
+						onClick={() => onChangeBoardViewMode('column')}
+						aria-pressed={boardViewMode === 'column'}
+						aria-label="Column view"
+						title="Switch to Change View"
+					>
+						<FiColumns aria-hidden="true" />
+					</button>
+				</div>
 				<div className="sidebar__theme-group" role="group" aria-label="Theme mode">
 					<button
 						type="button"
@@ -84,6 +124,7 @@ export function Sidebar({ themeMode, onChangeThemeMode }: SidebarProps) {
 					</button>
 				</div>
 			</div>
-		</aside>
+			</aside>
+		</>
 	)
 }

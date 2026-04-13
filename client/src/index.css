@@ -1,12 +1,12 @@
 :root {
-	--background: #ffffff;
+	--background: #f4f6fa;
 	--surface: #f7f9fc;
 	--surface-alt: #f1f5f9;
 	--border: #e3e8ef;
 	--text-primary: #152033;
 	--text-secondary: #5c6678;
-	--accent: #b8860b;
-	--accent-soft: rgba(184, 134, 11, 0.16);
+	--accent: #2563eb;
+	--accent-soft: rgba(37, 99, 235, 0.16);
 	--card-background: #ffffff;
 	--input-background: #ffffff;
 	--danger-background: #fde8e8;
@@ -27,15 +27,15 @@
 }
 
 :root[data-theme='dark'] {
-	--background: #202020;
+	--background: #141414;
 	--surface: #1b1b1b;
 	--surface-alt: #252525;
 	--border: #323232;
 	--text-primary: #d4d4d4;
 	--text-secondary: #888888;
-	--accent: #d6a93d;
-	--accent-soft: rgba(214, 169, 61, 0.18);
-	--card-background: #202020;
+	--accent: #3b82f6;
+	--accent-soft: rgba(59, 130, 246, 0.22);
+	--card-background: #1e1e1e;
 	--input-background: #141414;
 	--danger-background: rgba(239, 68, 68, 0.16);
 	--danger-text: #ffb4ad;

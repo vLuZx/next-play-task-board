@@ -75,12 +75,20 @@ export function MemberSelect({ members, value, onChange }: MemberSelectProps) {
 			</button>
 
 			{isOpen && (
-				<ul className="member-select__list" role="listbox" aria-label="Assigned team members" aria-multiselectable="true">
+				<ul
+					className="member-select__list"
+					role="listbox"
+					aria-label="Assigned team members"
+					aria-multiselectable="true"
+					onMouseDown={(event) => event.stopPropagation()}
+				>
 					<li
 						className={`member-select__option${!value.length ? ' member-select__option--selected' : ''}`}
 						role="option"
 						aria-selected={!value.length}
-						onClick={() => onChange([])}
+						onClick={() => {
+							onChange([])
+						}}
 					>
 						<span className="member-select__unassigned-icon">
 							<FiUser aria-hidden="true" />
